@@ -2,7 +2,7 @@
 
 # Install common dependencies
 sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get upgrade -y
 sudo apt-get install -y \
     apt-transport-https \
     binutils-gold \
@@ -53,6 +53,17 @@ git clone https://github.com/google/gvisor.git gvisor
     sudo cp ./bazel-bin/runsc/linux_amd64_pure_stripped/runsc /usr/local/bin
 )
 
+# Install KVM
+# https://help.ubuntu.com/community/KVM/Installation
+# We are using Ubuntu 10.04.
+sudo apt-get install -y \
+    qemu-kvm \
+    libvirt-daemon-system \
+    libvirt-clients \
+    bridge-utils
+sudo adduser `id -un` kvm
+sudo adduser `id -un` libvirt
+
 # Configure Docker
 # https://gvisor.dev/docs/user_guide/quick_start/docker/#configuring-docker
 cat << EOF | sudo tee /etc/docker/daemon.json
@@ -60,6 +71,12 @@ cat << EOF | sudo tee /etc/docker/daemon.json
     "runtimes": {
         "runsc": {
             "path": "/usr/local/bin/runsc"
+        },
+        "runsc-kvm": {
+            "path": "/usr/local/bin/runsc",
+            "runtimeArgs": [
+                "--platform=kvm"
+            ]
         }
     }
 }
