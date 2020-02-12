@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Install common dependencies
+# Install general packages
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y \
@@ -8,6 +8,7 @@ sudo apt-get install -y \
     binutils-gold \
     build-essential \
     ca-certificates \
+    clang-format \
     curl \
     git \
     gnupg-agent \
