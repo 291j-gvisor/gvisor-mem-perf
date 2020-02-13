@@ -1,65 +1,41 @@
 // Adapted from:
 // https://github.com/EthanGYoung/gvisor_analysis/blob/master/experiments/execute/memory_performance/nofree/malloc_nofree.c
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/types.h>
 #include <time.h>
-#include <unistd.h>
 
 #include "util.h"
 
-int NUM_TRIALS;
-int MALLOC_SIZE;
+int main(int argc, char *argv[]) {
+  // parse command line args
+  if (argc != 3) {
+    printf("ERROR: Usage: ./malloc_free <iterations> <malloc size>\n");
+    return 1;
+  }
+  int iterations = atoi(argv[1]);
+  int malloc_size = atoi(argv[2]);
 
-float execute() {
+  // benchmark
+  struct timespec start, end;
   char *str;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
-  // Start timer
-  struct timespec ts0;
-  clock_gettime(CLOCK_REALTIME, &ts0);
-
-  for (int i = 0; i < NUM_TRIALS; i++) {
+  for (int i = 0; i < iterations; ++i) {
     // malloc
-    str = (char *)malloc(MALLOC_SIZE);
+    str = (char *)malloc(malloc_size);
     strcpy(str, "test");
     if (strcmp(str, "test") != 0) {
       printf("ERROR: Failed to read from str\n");
       return 0;
     }
+
+    // no free
   }
 
-  // End timer
-  struct timespec ts1;
-  clock_gettime(CLOCK_REALTIME, &ts1);
-  struct timespec t = diff(ts0, ts1);
-  // close(fd);
-  float elapsed_time = t.tv_sec + t.tv_nsec / (float)1000000000;
-
-  return elapsed_time;
-}
-
-int main(int argc, char *argv[]) {
-  // Parse command line args
-  if (argc != 3) {
-    printf("ERROR: Usage: ./mallocfree <number of trials> <malloc size>\n");
-    return 0;
-  }
-
-  NUM_TRIALS = atoi(argv[1]);
-
-  float total = 0;
-
-  total = execute();
-
-  printf(
-      "LOG_OUTPUT: Average for %d trials: Open/close time average = %.12f "
-      "seconds\n",
-      NUM_TRIALS, total / NUM_TRIALS);
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  double elapsed = get_elapsed_in_s(start, end);
+  printf("%.12f\n", elapsed / iterations);
 
   return 0;
 }

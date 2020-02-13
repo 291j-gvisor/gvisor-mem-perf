@@ -43,6 +43,8 @@ sudo apt-get install -y \
     containerd.io
 sudo groupadd docker
 sudo usermod -aG docker $USER
+# https://docker-py.readthedocs.io/
+pip3 install docker
 
 # Install gVisor
 # https://github.com/google/gvisor#installing-from-source

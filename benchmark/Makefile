@@ -1,5 +1,5 @@
 BINDIR = bin
-BINS = $(patsubst ./%.c,$(BINDIR)/%,$(shell find . -type f -name "*.c"))
+BINS = $(patsubst ./%.c,$(BINDIR)/%,$(shell find . -name '*.c'))
 
 .PHONY: all
 all: $(BINS)
@@ -13,3 +13,7 @@ $(BINDIR):
 .PHONY: clean
 clean:
 	rm -rf $(BINDIR)
+
+.PHONY: fmt
+fmt:
+	find . -name '*.c' -exec clang-format -style=file -i {} \;

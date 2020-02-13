@@ -1,5 +1,4 @@
 FROM gcc:4.9
-COPY . /usr/src/work
 WORKDIR /usr/src/work
+COPY . .
 RUN make
-ENTRYPOINT ["./run_all.py"]
