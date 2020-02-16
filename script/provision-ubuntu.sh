@@ -104,9 +104,26 @@ cat << EOF | sudo tee /etc/docker/daemon.json
         "runsc-kvm-dev": {
             "path": "/usr/local/bin/runsc-dev",
             "runtimeArgs": [
-                "--platform=kvm"
+                "--platform=kvm",
             ]
         }
+        "runsc-debug": {
+            "path": "/usr/local/bin/runsc"
+            "runtimeArgs": [
+             		"--debug-log=/tmp/runsc/",
+                "--debug",
+                "--strace"
+            ]
+        }
+        "runsc-kvm-debug": {
+            "path": "/usr/local/bin/runsc",
+            "runtimeArgs": [
+                "--platform=kvm",
+            		"--debug-log=/tmp/runsc/",
+                "--debug",
+                "--strace"
+            ]
+        }       
     }
 }
 EOF
