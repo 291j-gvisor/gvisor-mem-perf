@@ -1,0 +1,4 @@
+docker
+matplotlib
+pandas
+seaborn
