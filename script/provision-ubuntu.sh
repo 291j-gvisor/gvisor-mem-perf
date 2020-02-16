@@ -74,11 +74,19 @@ cat << EOF | sudo tee /etc/docker/daemon.json
     "runtimes": {
         "runsc": {
             "path": "/usr/local/bin/runsc"
+            "runtimeArgs": [
+       		"--debug-log=/tmp/runsc/",
+                "--debug",
+                "--strace"
+            ]
         },
         "runsc-kvm": {
             "path": "/usr/local/bin/runsc",
             "runtimeArgs": [
-                "--platform=kvm"
+                "--platform=kvm",
+		"--debug-log=/tmp/runsc/",
+                "--debug",
+                "--strace"
             ]
         }
     }
