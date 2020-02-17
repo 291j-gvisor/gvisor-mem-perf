@@ -27,3 +27,39 @@ $ exit
 ```
 
 More Vagrant commands could be found in its [documentation](https://www.vagrantup.com/docs/cli/).
+
+## Benchmark Run
+
+Make sure you are in the `benchmark` directory:
+```
+$ cd benchmark
+```
+
+### The manual way
+
+First compile the benchmark codes:
+```
+$ make
+```
+
+To run a benchmark natively:
+```
+$ ./bin/malloc_free 1000 1024
+```
+
+To move forward, we need to build a docker image:
+```
+$ docker image build . --tag gvisor-bench
+```
+
+To run the same command in Docker:
+```console
+$ docker run gvisor-bench ./bin/malloc_free 1000 1024
+```
+
+To run the same command in Docker with gVisor:
+```console
+$ docker run --runtime=runsc gvisor-bench ./bin/malloc_free 1000 1024
+```
+
+Other runtimes are configured in [`daemon.json`](daemon.json). The usages of `*-debug` and `*-prof` runtimes are more advanced, and are documented [online](https://gvisor.dev/docs/user_guide/debugging/).
