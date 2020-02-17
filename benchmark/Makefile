@@ -4,7 +4,7 @@ BINS = $(patsubst ./%.c,$(BINDIR)/%,$(shell find . -name '*.c'))
 .PHONY: all
 all: $(BINS)
 
-$(BINS): bin/%: %.c util.h | $(BINDIR)
+$(BINS): $(BINDIR)/%: %.c util.h | $(BINDIR)
 	gcc -std=gnu99 -o $@ $<
 
 $(BINDIR):

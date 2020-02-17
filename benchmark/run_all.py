@@ -10,13 +10,20 @@ import docker
 
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
-CMDS = ['bin/malloc_free', 'bin/malloc_nofree']
-TRIALS = 100
+# CMDS = ['bin/malloc_free', 'bin/malloc_nofree']
+# CMDS = ['bin/malloc_nofree_notouch']
+MODE = ["notouch_nofree", "notouch_free", "touch_nofree", "touch_free"]
+MAX_MEM = 512*1024*1024
+MMAP_THRESHOLD = 128*1024
+TRIALS = 10
 ITERATIONS = 100000
 MALLOC_SIZES = [
     1024 * 4,
+    1024 * 8,
     1024 * 16,
+    1024 * 32,
     1024 * 64,
+    1024 * 128,
     1024 * 256,
     1024 * 1024,
 ]
@@ -37,7 +44,7 @@ def run_native(cmd):
     return cp.stdout.decode().strip()
 
 def run_docker(cmd, runtime='runc'):
-    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime)
+    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime, remove=True)
     return stdout.decode().strip()
 
 if __name__ == '__main__':
@@ -46,18 +53,21 @@ if __name__ == '__main__':
     args = parser.parse_args()
     runtime = args.runtime
 
-    for cmd in CMDS:
-        cmd_name = cmd.split('/')[-1]
-        out_file = Path(f'data/{runtime}/{cmd_name}.csv')
+    for mode, modename in enumerate(MODE):
+        out_file = Path(f'data/{runtime}/malloc_{modename}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
-            f.write('malloc_size,elapsed_time\n')
+            header_line = 'malloc_size,elapsed_time'
+            print(header_line)
+            f.write(f'{header_line}\n')
             for malloc_size in MALLOC_SIZES:
+                iterations = MAX_MEM / malloc_size if (malloc_size * ITERATIONS > MAX_MEM) else ITERATIONS
+                full_cmd = f'bin/malloc_benchmark {iterations} {malloc_size} {mode} {MMAP_THRESHOLD}' if runtime != 'runsc' else f'bin/malloc_benchmark {iterations} {malloc_size} {mode}'
+                print(full_cmd)
                 for trial in range(TRIALS):
-                    full_cmd = f'{cmd} {ITERATIONS} {malloc_size}'
                     stdout = run(full_cmd, runtime=runtime)
                     elapsed_time = stdout.strip()
-                    line = f'{malloc_size},{elapsed_time}'
-                    print(line)
-                    f.write(f'{line}\n')
+                    data_line = f'{malloc_size},{elapsed_time}'
+                    print(data_line)
+                    f.write(f'{data_line}\n')

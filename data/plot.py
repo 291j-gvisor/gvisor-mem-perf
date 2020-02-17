@@ -8,7 +8,8 @@ import seaborn as sns
 THIS_DIR = Path(__file__).parent
 
 def get_bench_names(machine_dir):
-    return ['malloc_free', 'malloc_nofree']
+    # return ['malloc_free', 'malloc_nofree']
+    return ['malloc_notouch_nofree','malloc_notouch_free','malloc_touch_nofree','malloc_touch_free']    
 
 def make_plot(machine_dir, bench_name):
     df = pd.DataFrame()
