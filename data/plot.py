@@ -35,6 +35,7 @@ def make_plot(machine_dir, bench_name):
     plt.title(bench_name)
     plt.tight_layout()
     plt.savefig(machine_dir / f'{bench_name}.pdf')
+    plt.close()
 
 for machine_dir in THIS_DIR.iterdir():
     if not machine_dir.is_dir():
