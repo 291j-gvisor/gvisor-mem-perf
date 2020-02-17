@@ -1,0 +1,38 @@
+{
+    "runtimes": {
+        "runsc": {
+            "path": "/usr/local/bin/runsc-20200211"
+        },
+        "runsc-debug": {
+            "path": "/usr/local/bin/runsc-20200211",
+            "runtimeArgs": [
+                "--debug-log=/tmp/runsc-20200211/",
+                "--debug",
+                "--strace"
+            ]
+        },
+        "runsc-prof": {
+            "path": "/usr/local/bin/runsc-20200211",
+            "runtimeArgs": [
+                "--profile"
+            ]
+        },
+        "runsc-dev": {
+            "path": "/usr/local/bin/runsc-dev"
+        },
+        "runsc-dev-debug": {
+            "path": "/usr/local/bin/runsc-dev",
+            "runtimeArgs": [
+                "--debug-log=/tmp/runsc-dev/",
+                "--debug",
+                "--strace"
+            ]
+        },
+        "runsc-dev-prof": {
+            "path": "/usr/local/bin/runsc-dev",
+            "runtimeArgs": [
+                "--profile"
+            ]
+        }
+    }
+}

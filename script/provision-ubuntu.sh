@@ -86,34 +86,7 @@ sudo adduser "$(id -un)" libvirt
 
 # Configure Docker for gVisor
 # https://gvisor.dev/docs/user_guide/quick_start/docker/#configuring-docker
-cat << EOF | sudo tee /etc/docker/daemon.json
-{
-    "runtimes": {
-        "runsc": {
-            "path": "/usr/local/bin/runsc-20200211"
-        },
-        "runsc-debug": {
-            "path": "/usr/local/bin/runsc-20200211",
-            "runtimeArgs": [
-                "--debug-log=/tmp/runsc-20200211/",
-                "--debug",
-                "--strace"
-            ]
-        },
-        "runsc-dev": {
-            "path": "/usr/local/bin/runsc-dev"
-        },
-        "runsc-dev-debug": {
-            "path": "/usr/local/bin/runsc-dev",
-            "runtimeArgs": [
-                "--debug-log=/tmp/runsc-dev/",
-                "--debug",
-                "--strace"
-            ]
-        }
-    }
-}
-EOF
+sudo cp daemon.json /etc/docker/daemon.json
 sudo systemctl restart docker
 
 # Install required Python packages
