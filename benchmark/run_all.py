@@ -62,8 +62,9 @@ if __name__ == '__main__':
             print(header_line)
             f.write(f'{header_line}\n')
             for malloc_size in MALLOC_SIZES:
-                ITERATIONS = MAX_MEM / malloc_size if (malloc_size * ITERATIONS > MAX_MEM) else ITERATIONS
-                full_cmd = f'bin/malloc_benchmark {ITERATIONS} {malloc_size} {mode} {MMAP_THRESHOLD}' if runtime != 'runsc' else f'bin/malloc_benchmark {ITERATIONS} {malloc_size} {mode}'
+                iterations = MAX_MEM / malloc_size if (malloc_size * ITERATIONS > MAX_MEM) else ITERATIONS
+                full_cmd = f'bin/malloc_benchmark {iterations} {malloc_size} {mode} {MMAP_THRESHOLD}' if runtime != 'runsc' else f'bin/malloc_benchmark {iterations} {malloc_size} {mode}'
+                print(full_cmd)
                 for trial in range(TRIALS):
                     stdout = run(full_cmd, runtime=runtime)
                     elapsed_time = stdout.strip()
