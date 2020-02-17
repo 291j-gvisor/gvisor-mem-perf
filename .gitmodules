@@ -1,6 +1,7 @@
-[submodule "extern/gvisor-20200211"]
-	path = extern/gvisor-20200211
+[submodule "extern/gvisor"]
+	path = extern/gvisor
 	url = https://github.com/google/gvisor.git
 [submodule "extern/gvisor-dev"]
 	path = extern/gvisor-dev
-	url = https://github.com/google/gvisor.git
+	url = https://github.com/291j-gvisor/gvisor.git
+	branch = dev

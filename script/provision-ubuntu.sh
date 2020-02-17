@@ -66,13 +66,16 @@ sudo apt-get install -y \
     docker-ce \
     build-essential \
     binutils-gold
-for gvisor_version in 20200211 dev; do
 (
-    cd extern/gvisor-$gvisor_version
+    cd extern/gvisor
     bazel build runsc
-    sudo cp ./bazel-bin/runsc/linux_amd64_pure_stripped/runsc /usr/local/bin/runsc-$gvisor_version
+    sudo cp ./bazel-bin/runsc/linux_amd64_pure_stripped/runsc /usr/local/bin/runsc
 )
-done
+(
+    cd extern/gvisor-dev
+    bazel build runsc
+    sudo cp ./bazel-bin/runsc/linux_amd64_pure_stripped/runsc /usr/local/bin/runsc-dev
+)
 
 # Install KVM (experimental)
 # https://help.ubuntu.com/community/KVM/Installation

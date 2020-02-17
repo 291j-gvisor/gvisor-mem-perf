@@ -1,18 +1,18 @@
 {
     "runtimes": {
         "runsc": {
-            "path": "/usr/local/bin/runsc-20200211"
+            "path": "/usr/local/bin/runsc"
         },
         "runsc-debug": {
-            "path": "/usr/local/bin/runsc-20200211",
+            "path": "/usr/local/bin/runsc",
             "runtimeArgs": [
-                "--debug-log=/tmp/runsc-20200211/",
+                "--debug-log=/tmp/runs/",
                 "--debug",
                 "--strace"
             ]
         },
         "runsc-prof": {
-            "path": "/usr/local/bin/runsc-20200211",
+            "path": "/usr/local/bin/runsc",
             "runtimeArgs": [
                 "--profile"
             ]
