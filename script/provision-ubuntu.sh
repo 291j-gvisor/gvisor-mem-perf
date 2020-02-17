@@ -66,11 +66,13 @@ sudo apt-get install -y \
     docker-ce \
     build-essential \
     binutils-gold
+# Build the standard version
 (
     cd extern/gvisor
     bazel build runsc
     sudo cp ./bazel-bin/runsc/linux_amd64_pure_stripped/runsc /usr/local/bin/runsc
 )
+# Build the development version
 (
     cd extern/gvisor-dev
     bazel build runsc
@@ -94,9 +96,9 @@ sudo systemctl restart docker
 
 # Install Go
 # https://github.com/golang/go/wiki/Ubuntu
-sudo add-apt-repository ppa:longsleep/golang-backports
+sudo add-apt-repository -y ppa:longsleep/golang-backports
 sudo apt-get update
-sudo apt-get install golang-go
+sudo apt-get install -y golang-go
 # https://github.com/google/pprof
 go get -u github.com/google/pprof
 

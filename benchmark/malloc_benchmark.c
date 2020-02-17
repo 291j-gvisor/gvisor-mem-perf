@@ -1,10 +1,10 @@
 // Adapted from:
 // https://github.com/EthanGYoung/gvisor_analysis/blob/master/experiments/execute/memory_performance/nofree/malloc_nofree.c
+#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <malloc.h>
 
 #include "util.h"
 
@@ -12,7 +12,7 @@ void notouch_nofree(int iterations, int malloc_size) {
   struct timespec start, end;
   char *str;
   clock_gettime(CLOCK_MONOTONIC, &start);
-  void * p;
+  void *p;
   for (int i = 0; i < iterations; ++i) {
     // malloc
     p = malloc(malloc_size);
@@ -33,7 +33,7 @@ void notouch_free(int iterations, int malloc_size) {
 
   for (int i = 0; i < iterations; ++i) {
     // malloc
-    void * p = malloc(malloc_size);
+    void *p = malloc(malloc_size);
     // no touch
     // do free
     free(p);
@@ -48,7 +48,7 @@ void touch_nofree(int iterations, int malloc_size) {
   struct timespec start, end;
   char *str;
   clock_gettime(CLOCK_MONOTONIC, &start);
-  void * p;
+  void *p;
 
   for (int i = 0; i < iterations; ++i) {
     // malloc
@@ -71,7 +71,7 @@ void touch_free(int iterations, int malloc_size) {
 
   for (int i = 0; i < iterations; ++i) {
     // malloc
-    void * p = malloc(malloc_size);
+    void *p = malloc(malloc_size);
     // do touch
     memset(p, 0, malloc_size);
     // do free
@@ -86,18 +86,22 @@ void touch_free(int iterations, int malloc_size) {
 int main(int argc, char *argv[]) {
   // parse command line args
   if (argc < 4) {
-    printf("ERROR: Usage: ./malloc_free <iterations> <malloc size> <mode> [mmap threshold]\n");
+    printf(
+        "ERROR: Usage: ./malloc_free <iterations> <malloc size> <mode> [mmap "
+        "threshold]\n");
     return 1;
   }
   if (argc > 5) {
-    printf("ERROR: Usage: ./malloc_free <iterations> <malloc size> <mode> [mmap threshold]\n");
+    printf(
+        "ERROR: Usage: ./malloc_free <iterations> <malloc size> <mode> [mmap "
+        "threshold]\n");
     return 1;
   }
   int iterations = atoi(argv[1]);
   int malloc_size = atoi(argv[2]);
   int mode = atoi(argv[3]);
   if (argc == 5) {
-    if (!mallopt(M_MMAP_THRESHOLD, 4*1024)) {
+    if (!mallopt(M_MMAP_THRESHOLD, 4 * 1024)) {
       perror("mallopt");
     }
   }
@@ -118,7 +122,7 @@ int main(int argc, char *argv[]) {
       break;
     default:
       printf("ERROR: Invalid mode!\n");
-      return 1; 
+      return 1;
   }
 
   return 0;

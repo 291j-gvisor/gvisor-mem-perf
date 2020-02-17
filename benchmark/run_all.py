@@ -54,18 +54,19 @@ if __name__ == '__main__':
     runtime = args.runtime
 
     for mode, modename in enumerate(MODE):
-        out_file = Path(f'../data/mypc/{runtime}/malloc_{modename}.csv')
+        out_file = Path(f'data/{runtime}/malloc_{modename}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
-            f.write('malloc_size,elapsed_time\n')
+            header_line = 'malloc_size,elapsed_time'
+            print(header_line)
+            f.write(f'{header_line}\n')
             for malloc_size in MALLOC_SIZES:
                 ITERATIONS = MAX_MEM / malloc_size if (malloc_size * ITERATIONS > MAX_MEM) else ITERATIONS
                 full_cmd = f'bin/malloc_benchmark {ITERATIONS} {malloc_size} {mode} {MMAP_THRESHOLD}' if runtime != 'runsc' else f'bin/malloc_benchmark {ITERATIONS} {malloc_size} {mode}'
                 for trial in range(TRIALS):
-                    
                     stdout = run(full_cmd, runtime=runtime)
                     elapsed_time = stdout.strip()
-                    line = f'{malloc_size},{elapsed_time}'
-                    print(line)
-                    f.write(f'{line}\n')
+                    data_line = f'{malloc_size},{elapsed_time}'
+                    print(data_line)
+                    f.write(f'{data_line}\n')

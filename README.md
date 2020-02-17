@@ -1,65 +1,81 @@
-# A course project on gVisor (WIP)
+# gVisor Memory Subsystem Performance Improvement (WIP)
 
-## Development Environment
+This is a course project in progress.
 
-gVisor only works on Linux. To enable local development on different platforms including macOS and Windows, [Vagrant](https://www.vagrantup.com/) is used to set up a unified environment. The [installation](https://www.vagrantup.com/docs/installation/) is pretty straightforward, except for a known [issue](https://github.com/oracle/vagrant-boxes/issues/178#issue-536720633) with Vagrant 2.2.6 and VirtualBox 6.1 (as of Feb 2020).
+## Environment Setup
 
-Once Vagrant is installed, setting up the development environment is one command away:
+Throughout the project, the target OS is assumed to be Ubuntu 18.04 LTS (Bionic Beaver). To prepare a fresh OS for following work, just do:
+```console
+./script/provision-ubuntu.sh
+```
+
+Then you could check the versions of major tools in use:
+```console
+./script/check-versions.sh
+```
+
+### Vagrant
+
+gVisor only works on Linux. If your local OS is not Linux, you could use a virtual machine for local development. A `Vagrantfile` is provided to facilitate setting up the VM environment. Just do:
 ```console
 $ vagrant up
 ```
 
-Installing gVisor from source can take a fair amount of time. Be a little bit patient. Once this step finishes, you could `ssh` into the created VM:
+This project directory is synced with `~/work` within the VM. To get to work:
 ```console
 $ vagrant ssh
+$ cd work
 ```
 
-And play with gVisor:
-```console
-$ docker run --runtime=runsc -it ubuntu dmesg
-```
+### GCP and AWS
 
-This project directory is synced with `~/work` in the VM.
-
-To get out from the VM, just type:
-```console
-$ exit
-```
-
-More Vagrant commands could be found in its [documentation](https://www.vagrantup.com/docs/cli/).
+The cloud environment is not so much different from a local one. Start a proper instance, clone this repository somewhere, run the provision script, and you shall be good to go.
 
 ## Benchmark Run
 
-Make sure you are in the `benchmark` directory:
-```
-$ cd benchmark
-```
+Once the environment is set up, we could move on to do benchmarks. Following operations are assumed to be invoked in the `benchmark` directory.
 
-### The manual way
+### Manual commands
 
-First compile the benchmark codes:
+First compile the source code:
 ```
 $ make
 ```
 
-To run a benchmark natively:
+The compiled binaries could be found in `bin`. To run a benchmark natively:
 ```
-$ ./bin/malloc_free 1000 1024
+$ ./bin/malloc_benchmark 1000 1024 0
 ```
 
 To move forward, we need to build a docker image:
 ```
-$ docker image build . --tag gvisor-bench
+$ docker image build . --tag gvisor-mem-perf
 ```
 
 To run the same command in Docker:
 ```console
-$ docker run gvisor-bench ./bin/malloc_free 1000 1024
+$ docker run gvisor-mem-perf ./bin/malloc_benchmark 1000 1024 0
 ```
 
 To run the same command in Docker with gVisor:
 ```console
-$ docker run --runtime=runsc gvisor-bench ./bin/malloc_free 1000 1024
+$ docker run --runtime=runsc gvisor-mem-perf ./bin/malloc_benchmark 1000 1024 0
 ```
 
-Other runtimes are configured in [`daemon.json`](daemon.json). The usages of `*-debug` and `*-prof` runtimes are more advanced, and are documented [online](https://gvisor.dev/docs/user_guide/debugging/).
+Other runtimes are configured in [`daemon.json`](daemon.json). The usages of `*-debug` and `*-prof` runtimes are more advanced. The details could be found in [gVisor documentation on debugging](https://gvisor.dev/docs/user_guide/debugging/).
+
+### Automation scripts
+
+To run a whole suite of benchmarks:
+```console
+$ ./run_all.py
+```
+
+## Data Analysis
+
+In the previous step, the results are saved in `benchmark/data`. To persist the data for further analysis, we need to move that directory to be a subdirectory of `data`. The naming convention is `data/{machine_type}`. For example, `data/gcp-n1-standard-4` means results from a `n1-standard-4` instance on GCP.
+
+Once the `data` directory is populated, we could visualize the results using a Python script:
+```console
+$ ./data/plot.py
+```
