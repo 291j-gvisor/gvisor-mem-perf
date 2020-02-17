@@ -89,6 +89,14 @@ sudo adduser "$(id -un)" libvirt
 sudo cp daemon.json /etc/docker/daemon.json
 sudo systemctl restart docker
 
+# Install Go
+# https://github.com/golang/go/wiki/Ubuntu
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt-get update
+sudo apt-get install golang-go
+# https://github.com/google/pprof
+go get -u github.com/google/pprof
+
 # Install required Python packages
 pip3 install -r requirements.txt
 
