@@ -12,7 +12,7 @@ import docker
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
 
-TRIALS = 100
+TRIALS = 10
 ITERATIONS = 10000
 MMAP_SIZES = [
     1024 * 4,

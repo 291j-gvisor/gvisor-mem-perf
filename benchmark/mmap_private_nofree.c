@@ -1,12 +1,11 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <sys/mman.h>
+#include <time.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include "util.h"
-
 
 int main(int argc, char *argv[]) {
   // parse command line args
@@ -21,15 +20,14 @@ int main(int argc, char *argv[]) {
   unsigned long mapSize = strtoul(argv[2], NULL, 10);
   unsigned long offset = 0;
 
-  int * map;
+  int *map;
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
   int file = open("mapfile", O_RDWR);
 
-
-  for(int i = 0; i < iterations; i++) {
+  for (int i = 0; i < iterations; i++) {
     map = mmap(0, mapSize, PROT_READ, MAP_PRIVATE, file, offset);
-    offset = offset+mapSize;
+    offset = offset + mapSize;
   }
 
   clock_gettime(CLOCK_MONOTONIC, &end);
@@ -37,7 +35,3 @@ int main(int argc, char *argv[]) {
   printf("%.12f\n", elapsed / iterations);
   close(file);
 }
-
-
-
-
