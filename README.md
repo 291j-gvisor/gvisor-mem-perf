@@ -68,7 +68,7 @@ Other runtimes are configured in [`daemon.json`](daemon.json). The usages of `*-
 
 To run a whole suite of benchmarks:
 ```console
-$ ./run_all_all.sh
+$ ./run_all.sh
 ```
 
 ## Data Analysis

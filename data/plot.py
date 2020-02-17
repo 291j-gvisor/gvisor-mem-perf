@@ -29,6 +29,8 @@ def make_plot(machine_dir, bench_name):
     elif 'mmap_size' in df:
         x_label = 'mmap_size_kb'
         df[x_label] = df['mmap_size'] // 1024
+    elif 'iterations' in df:
+        x_label = 'iterations'
     y_label = 'ops_per_sec'
     df[y_label] = 1 / df['elapsed_time']
     sns.catplot(x=x_label, y=y_label, hue="runtime", kind="bar", data=df)
