@@ -97,8 +97,9 @@ int main(int argc, char *argv[]) {
   int malloc_size = atoi(argv[2]);
   int mode = atoi(argv[3]);
   if (argc == 5) {
-    if (!mallopt(M_MMAP_THRESHOLD, 4*1024)) {
+    if (mallopt(M_MMAP_THRESHOLD, atoi(argv[4])) == 0) {
       perror("mallopt");
+      return 1;
     }
   }
 
