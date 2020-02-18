@@ -40,7 +40,7 @@ def make_plot(machine_dir, bench_name):
     plt.close()
 
 for machine_dir in THIS_DIR.iterdir():
-    if not machine_dir.is_dir():
+    if not machine_dir.is_dir() or machine_dir.name == 'fine':
         continue
     for bench_name in get_bench_names(machine_dir):
         make_plot(machine_dir, bench_name)
