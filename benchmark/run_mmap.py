@@ -10,10 +10,12 @@ import docker
 
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
-CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
+#CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
+CMDS = ['bin/mmap_anon_nofree','bin/mmap_anon_free']
 
 TRIALS = 10
-ITERATIONS = 10000
+#ITERATIONS = 100000
+MEM_LIMIT = 1024*1024*1024*10
 MMAP_SIZES = [
     1024 * 4,
     1024 * 16,
@@ -38,25 +40,28 @@ def run_native(cmd):
     return cp.stdout.decode().strip()
 
 def run_docker(cmd, runtime='runc'):
-    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime)
+    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime, mem_limit='11g')
     return stdout.decode().strip()
 
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--runtime', default='native')
+    parser.add_argument('--iterations', default=100000)
     args = parser.parse_args()
     runtime = args.runtime
+    ITERATIONS = int(args.iterations)
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        out_file = Path(f'data/{runtime}/{cmd_name}.csv')
+        out_file = Path(f'data/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
             f.write('mmap_size,elapsed_time\n')
             for mmap_size in MMAP_SIZES:
+                iterations = MEM_LIMIT/mmap_size if ITERATIONS * mmap_size > MEM_LIMIT else ITERATIONS
                 for trial in range(TRIALS):
-                    full_cmd = f'{cmd} {ITERATIONS} {mmap_size}'
+                    full_cmd = f'{cmd} {iterations} {mmap_size}'
                     stdout = run(full_cmd, runtime=runtime)
                     elapsed_time = stdout.strip()
                     line = f'{mmap_size},{elapsed_time}'
