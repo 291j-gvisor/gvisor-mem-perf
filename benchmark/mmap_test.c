@@ -14,12 +14,11 @@ int main(int argc, char *argv[]) {
   struct timespec start, end;
 
   printf("mmap: %x\n", map);
-  while (1) {
-    map = mmap(NULL, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-    munmap(map, mapSize);
-  }
-
-
-//  getchar();
+//  for (int i = 0;i < 100;++i) {
+     map = mmap(NULL, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+//     munmap(map, mapSize);
+//  }
+    printf("mmap: %x\n", map);
+  getchar();
   return 0;
 }
