@@ -15,12 +15,14 @@ sns.set(
 THIS_DIR = Path(__file__).absolute().parent
 DATA_DIR = THIS_DIR.parent
 
-def read_data():
+def read_data(data_dir):
     df = pd.DataFrame()
     for free_or_not in ['nofree', 'free']:
         for runtime in ['native', 'runc', 'runsc-kvm']:
-            for iterations in [5000, 10000, 50000, 100000]:
-                base_dir = DATA_DIR / 'linux' / f'{runtime}({iterations})'
+            for iterations in [5000, 10000, 50000, 100000, 250000, 500000]:
+                base_dir = data_dir / f'{runtime}({iterations})'
+                if not base_dir.exists():
+                    continue
                 df_ = pd.read_csv(base_dir / f'mmap_anon_{free_or_not}.csv')
                 df_['type'] = free_or_not
                 df_['runtime'] = runtime
@@ -35,7 +37,7 @@ def read_data():
     ]
     return df
 
-def plot_all_runtimes(df, tp):
+def plot_all_runtimes(df, tp, label=None):
     df = df[df['type'] == tp]
     g = sns.catplot(
         x='iterations', y='ops_per_sec', hue='runtime',
@@ -43,18 +45,47 @@ def plot_all_runtimes(df, tp):
         data=df, kind='bar', ci=None,
     )
     g.set_axis_labels('Iterations', 'Operations per Seconds')
-    plt.savefig(f'mmap_scaling_{tp}.pdf')
+    fn = f'mmap_scaling_{tp}'
+    if label is not None:
+        fn = f'{fn}_{label}'
+    plt.savefig(f'{fn}.pdf')
 
-def plot_kvm_only(df):
-    df = df[df['runtime'] == 'runsc-kvm']
+def plot_runtime(df, runtime, label=None):
+    df = df[df['runtime'] == runtime]
     g = sns.catplot(
         x='iterations', y='ops_per_sec', hue='mmap_size_kb', col='type',
         data=df, kind='bar', ci=None,
     )
     g.set_axis_labels('Iterations', 'Operations per Seconds')
-    plt.savefig(f'mmap_scaling_kvm.pdf')
+    fn = f'mmap_scaling_{runtime}'
+    if label is not None:
+        fn = f'{fn}_{label}'
+    plt.savefig(f'{fn}.pdf')
 
-df = read_data()
+def plot_runtime_iterations(df, runtime, iterations, label=None):
+    df = df[df['runtime'] == runtime]
+    df = df[df['iterations'] == iterations]
+    g = sns.catplot(
+        x='mmap_size_kb', y='ops_per_sec', hue='type',
+        data=df, kind='bar', ci=None,
+    )
+    g.set_axis_labels('mmap Size (kb)', 'Operations per second')
+    fn = f'mmap_scaling_{runtime}_{iterations}'
+    if label is not None:
+        fn = f'{fn}_{label}'
+    plt.savefig(f'{fn}.pdf')
+
+df = read_data(DATA_DIR / 'linux')
 plot_all_runtimes(df, 'free')
 plot_all_runtimes(df, 'nofree')
-plot_kvm_only(df)
+plot_runtime(df, 'runsc-kvm')
+plot_runtime(df, 'runc')
+
+df = read_data(DATA_DIR / 'data1')
+plot_runtime(df, 'native', label='data1')
+plot_runtime(df, 'runc', label='data1')
+plot_runtime(df, 'runsc-kvm', label='data1')
+
+df = read_data(DATA_DIR / 'data2')
+plot_runtime_iterations(df, 'runc', 50000, label='data2')
+plot_runtime_iterations(df, 'runsc-kvm', 50000, label='data2')
