@@ -28,6 +28,11 @@ def read_data():
                 df = df.append(df_)
     df['mmap_size_kb'] = df['mmap_size'] // 1024
     df['ops_per_sec'] = 1 / df['elapsed_time']
+    # Exclude nofree data with total allocated mem > 10GB
+    df = df[
+        (df['type'] == 'free') |
+        (df['mmap_size_kb'] * df['iterations'] < 10 * 1024**2)
+    ]
     return df
 
 def plot_all_runtimes(df, tp):
