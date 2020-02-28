@@ -16,7 +16,7 @@ CMDS = ['bin/mmap_anon_nofree','bin/mmap_anon_free']
 TRIALS = 10
 #ITERATIONS = 100000
 MEM_LIMIT_G = 52
-MEM_LIMIT = 1024*1024*1024*40
+MEM_LIMIT = 1024*1024*1024*MEM_LIMIT_G
 MMAP_SIZES = [
     1024 * 1,
     1024 * 2,
