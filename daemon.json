@@ -6,7 +6,7 @@
         "runsc-debug": {
             "path": "/usr/local/bin/runsc",
             "runtimeArgs": [
-                "--debug-log=/tmp/runs/",
+                "--debug-log=/tmp/runsc",
                 "--debug",
                 "--strace"
             ]

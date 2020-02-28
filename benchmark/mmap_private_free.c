@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   int *map;
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
-  int file = open("mapfile", O_RDWR);
+  int file = open("/dev/zero", O_RDWR);
 
   for (int i = 0; i < iterations; i++) {
     map = mmap(0, mapSize, PROT_READ, MAP_PRIVATE, file, offset);

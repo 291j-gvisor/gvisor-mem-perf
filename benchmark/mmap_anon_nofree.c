@@ -22,13 +22,17 @@ int main(int argc, char *argv[]) {
 
   int *map;
   struct timespec start, end;
+  fprintf(stdout, "START MMAP\n");
+  fflush(stdout);
   clock_gettime(CLOCK_MONOTONIC, &start);
 
   for (int i = 0; i < iterations; i++) {
-    map = mmap(0, mapSize, PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    map = mmap(0, mapSize, PROT_WRITE | PROT_READ | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
   }
 
   clock_gettime(CLOCK_MONOTONIC, &end);
+  fprintf(stdout, "END MMAP\n");
+  fflush(stdout);
   double elapsed = get_elapsed_in_s(start, end);
   printf("%.12f\n", elapsed / iterations);
 }

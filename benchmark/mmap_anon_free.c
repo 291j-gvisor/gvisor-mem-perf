@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   clock_gettime(CLOCK_MONOTONIC, &start);
 
   for (int i = 0; i < iterations; i++) {
-    map = mmap(0, mapSize, PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    map = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     munmap(map, mapSize);
   }
 
