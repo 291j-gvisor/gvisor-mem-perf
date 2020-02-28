@@ -62,15 +62,15 @@ def plot_runtime(df, runtime, label=None):
         fn = f'{fn}_{label}'
     plt.savefig(f'{fn}.pdf')
 
-def plot_iterations(df, iterations, label=None):
+def plot_runtime_iterations(df, runtime, iterations, label=None):
+    df = df[df['runtime'] == runtime]
     df = df[df['iterations'] == iterations]
     g = sns.catplot(
-        x='mmap_size_kb', y='ops_per_sec', hue='runtime', col='type',
+        x='mmap_size_kb', y='ops_per_sec', hue='type',
         data=df, kind='bar', ci=None,
-        height=8, aspect=4/8
     )
     g.set_axis_labels('mmap Size (kb)', 'Operations per second')
-    fn = f'mmap_scaling_{iterations}'
+    fn = f'mmap_scaling_{runtime}_{iterations}'
     if label is not None:
         fn = f'{fn}_{label}'
     plt.savefig(f'{fn}.pdf')
@@ -87,4 +87,5 @@ plot_runtime(df, 'runc', label='data1')
 plot_runtime(df, 'runsc-kvm', label='data1')
 
 df = read_data(DATA_DIR / 'data2')
-plot_iterations(df, 50000, label='data2')
+plot_runtime_iterations(df, 'runc', 50000, label='data2')
+plot_runtime_iterations(df, 'runsc-kvm', 50000, label='data2')
