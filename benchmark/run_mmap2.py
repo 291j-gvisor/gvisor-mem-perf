@@ -15,14 +15,20 @@ CMDS = ['bin/mmap_anon_nofree','bin/mmap_anon_free']
 
 TRIALS = 10
 #ITERATIONS = 100000
-MEM_LIMIT_G = 40
+MEM_LIMIT_G = 52
 MEM_LIMIT = 1024*1024*1024*40
 MMAP_SIZES = [
+    1024 * 1,
+    1024 * 2,
     1024 * 4,
+    1024 * 8,
     1024 * 16,
+    1024 * 32,
     1024 * 64,
-#    1024 * 256,
-#    1024 * 1024,
+    1024 * 128,
+    1024 * 256,
+    1024 * 512,
+    1024 * 1024
 ]
 
 # Global preparations
@@ -54,7 +60,7 @@ if __name__ == '__main__':
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        out_file = Path(f'data1/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        out_file = Path(f'data2/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
