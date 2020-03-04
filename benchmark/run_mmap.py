@@ -11,7 +11,7 @@ import docker
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
-CMDS = ['bin/mmap_anon_nofree','bin/mmap_anon_free']
+CMDS = ['bin/mmap_shared_nofree','bin/mmap_shared_free']
 
 TRIALS = 10
 #ITERATIONS = 100000
@@ -19,7 +19,7 @@ MEM_LIMIT_G = 40
 MEM_LIMIT = 1024*1024*1024*MEM_LIMIT_G
 MMAP_SIZES = [
 #    1024 * 4,
-#    1024 * 16,
+    1024 * 16,
     1024 * 64,
 #    1024 * 256,
 #    1024 * 1024,
@@ -41,7 +41,7 @@ def run_native(cmd):
     return cp.stdout.decode().strip()
 
 def run_docker(cmd, runtime='runc'):
-    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime, mem_limit=str(MEM_LIMIT_G+2)+'g')
+    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime, remove=True, mem_limit=str(MEM_LIMIT_G+2)+'g')
     return stdout.decode().strip()
 
 if __name__ == '__main__':
