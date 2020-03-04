@@ -16,10 +16,10 @@ sleep 10
 #./run_mmap.py --runtime=runsc-kvm --iterations=500000
 
 # with 100000 warmup iterations inside process
-./run_mmap.py --runtime=runc --iterations=100000 --warmup=100000
-./run_mmap.py --runtime=runsc-kvm --iterations=100000 --warmup=100000
-
-./run_mmap.py --runtime=runc --iterations=250000 --warmup=100000
+#./run_mmap.py --runtime=runc --iterations=100000 --warmup=100000
+#./run_mmap.py --runtime=runsc-kvm --iterations=100000 --warmup=100000
+#
+#./run_mmap.py --runtime=runc --iterations=250000 --warmup=100000
 ./run_mmap.py --runtime=runsc-kvm --iterations=250000 --warmup=100000
 
 ./run_mmap.py --runtime=runc --iterations=500000 --warmup=100000
