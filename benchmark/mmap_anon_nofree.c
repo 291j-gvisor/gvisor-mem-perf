@@ -7,8 +7,6 @@
 #include <unistd.h>
 #include "util.h"
 
-#define WARMUP 100000
-
 int main(int argc, char *argv[]) {
   // parse command line args
   if (argc != 4 && argc != 3) {
@@ -24,17 +22,20 @@ int main(int argc, char *argv[]) {
   if (argc == 4) {
     warmup = strtoul(argv[3], NULL, 10);
   }
-
-  int *map;
+  void **maparr = malloc(sizeof(void*)*warmup);
   // warmup
   struct timespec start, end;
 //  clock_gettime(CLOCK_MONOTONIC, &start);
-  for (int i = 0; i < WARMUP; i++) {
-    map = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+  for (int i = 0; i < warmup; ++i) {
+    maparr[i] = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
   }
+  for (int i = 0; i < warmup; ++i) {
+    munmap(maparr[i], mapSize);  
+  }
+  free(maparr);
 //  clock_gettime(CLOCK_MONOTONIC, &end);
 //  printf("warm up takes %lf seconds\n", get_elapsed_in_s(start, end));
-
+  void * map;
   clock_gettime(CLOCK_MONOTONIC, &start);
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
