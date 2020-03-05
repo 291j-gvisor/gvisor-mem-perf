@@ -15,7 +15,7 @@ sns.set(
 THIS_DIR = Path(__file__).absolute().parent
 DATA_DIR = THIS_DIR.parent
 
-def read_data(data_dir):
+def read_data(data_dir, total_mem_gb=10):
     df = pd.DataFrame()
     for free_or_not in ['nofree', 'free']:
         for runtime in ['native', 'runc', 'runsc-kvm']:
@@ -30,11 +30,12 @@ def read_data(data_dir):
                 df = df.append(df_)
     df['mmap_size_kb'] = df['mmap_size'] // 1024
     df['ops_per_sec'] = 1 / df['elapsed_time']
-    # Exclude nofree data with total allocated mem > 10GB
-    df = df[
-        (df['type'] == 'free') |
-        (df['mmap_size_kb'] * df['iterations'] < 10 * 1024**2)
-    ]
+    # Exclude nofree data with total allocated mem > total mem
+    if total_mem_gb is not None:
+        df = df[
+            (df['type'] == 'free') |
+            (df['mmap_size_kb'] * df['iterations'] < total_mem_gb * 1024**2)
+        ]
     return df
 
 def plot_all_runtimes(df, tp, label=None):
@@ -81,11 +82,11 @@ plot_all_runtimes(df, 'nofree')
 plot_runtime(df, 'runsc-kvm')
 plot_runtime(df, 'runc')
 
-df = read_data(DATA_DIR / 'data1')
+df = read_data(DATA_DIR / 'data1', total_mem_gb=None)
 plot_runtime(df, 'native', label='data1')
 plot_runtime(df, 'runc', label='data1')
 plot_runtime(df, 'runsc-kvm', label='data1')
 
-df = read_data(DATA_DIR / 'data2')
+df = read_data(DATA_DIR / 'data2', total_mem_gb=None)
 plot_runtime_iterations(df, 'runc', 50000, label='data2')
 plot_runtime_iterations(df, 'runsc-kvm', 50000, label='data2')
