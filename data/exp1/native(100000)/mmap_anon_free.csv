@@ -1,4 +1,4 @@
-mmap_size,elapsed_time
+mmap_size,latency
 4096,0.000000405006
 4096,0.000000414989
 4096,0.000000411661
