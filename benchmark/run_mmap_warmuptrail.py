@@ -13,7 +13,7 @@ import docker
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
 CMDS = ['bin/mmap_anon_nofree']
 
-WARMUP = 2
+WARMUP = 5
 TRIALS = 10
 #ITERATIONS = 100000
 MEM_LIMIT_G = 50
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 stdout = run(full_cmd, runtime=runtime)
 #                print(stdout)
                 elapsed_time = stdout.split('\n')
-                for i in range(2,TRIALS+WARMUP-1):
+                for i in range(WARMUP,TRIALS+WARMUP-1):
                     line = f'{mmap_size},{elapsed_time[i]}'
                     print(line)
                     f.write(f'{line}\n')
