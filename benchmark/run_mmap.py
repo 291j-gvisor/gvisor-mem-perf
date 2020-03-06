@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--runtime', default='native')
     parser.add_argument('--iterations', default=100000)
-    parser.add_argument('--warmup', default = 0)
+    parser.add_argument('--warmup', default = -1) #default adaptive
     args = parser.parse_args()
     runtime = args.runtime
     ITERATIONS = int(args.iterations)
@@ -57,7 +57,9 @@ if __name__ == '__main__':
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        if WARMUP_IT == 0:
+        if WARMUP_IT == -1:
+            out_file = Path(f'exp1_withwarmupinsideprocess_adaptive/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        elif WARMUP_IT == 0:
             out_file = Path(f'exp1/{runtime}({ITERATIONS})/{cmd_name}.csv')
         else:
             out_file = Path(f'exp1_withwarmupinsideprocess_{WARMUP_IT}/{runtime}({ITERATIONS})/{cmd_name}.csv')
@@ -67,8 +69,8 @@ if __name__ == '__main__':
             f.write('mmap_size,latency\n')
             for mmap_size in MMAP_SIZES:
                 iterations = MEM_LIMIT/mmap_size - WARMUP_IT if (ITERATIONS + WARMUP_IT) * mmap_size > MEM_LIMIT else ITERATIONS
-                for trial in range(TRIALS):
-                    full_cmd = f'{cmd} {iterations} {mmap_size} {WARMUP_IT}'
+                for trial in range(TRIALS): 
+                    full_cmd = f'{cmd} {iterations} {mmap_size}' if WARMUP_IT == -1 else f'{cmd} {iterations} {mmap_size} {WARMUP_IT}'
                     stdout = run(full_cmd, runtime=runtime)
                     elapsed_time = stdout.strip()
                     line = f'{mmap_size},{elapsed_time}'

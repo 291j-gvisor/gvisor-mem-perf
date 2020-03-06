@@ -18,19 +18,21 @@ int main(int argc, char *argv[]) {
   unsigned long iterations = strtoul(argv[1], NULL, 10);
   unsigned long mapSize = strtoul(argv[2], NULL, 10);
   unsigned long offset = 0;
-  unsigned long warmup = 0;
+  unsigned long warmupIt = 65536/mapSize*100000;
+  unsigned long warmupSize = mapSize;
   if (argc == 4) {
-    warmup = strtoul(argv[3], NULL, 10);
+    warmupIt = strtoul(argv[3], NULL, 10);
   }
-  void **maparr = malloc(sizeof(void*)*warmup);
+
+  void **maparr = malloc(sizeof(void*)*warmupIt);
   // warmup
 //  struct timespec start, end;
 //  clock_gettime(CLOCK_MONOTONIC, &start);
-  for (int i = 0; i < warmup; ++i) {
-    maparr[i] = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+  for (int i = 0; i < warmupIt; ++i) {
+    maparr[i] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
   }
-  for (int i = 0; i < warmup; ++i) {
-    munmap(maparr[i], mapSize);  
+  for (int i = 0; i < warmupIt; ++i) {
+    munmap(maparr[i], warmupSize);  
   }
   free(maparr);
 //  clock_gettime(CLOCK_MONOTONIC, &end);
