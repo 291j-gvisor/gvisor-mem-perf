@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   }
   void **maparr = malloc(sizeof(void*)*warmup);
   // warmup
-  struct timespec start, end;
+//  struct timespec start, end;
 //  clock_gettime(CLOCK_MONOTONIC, &start);
   for (int i = 0; i < warmup; ++i) {
     maparr[i] = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
@@ -36,22 +36,25 @@ int main(int argc, char *argv[]) {
 //  clock_gettime(CLOCK_MONOTONIC, &end);
 //  printf("warm up takes %lf seconds\n", get_elapsed_in_s(start, end));
   void * map;
-  clock_gettime(CLOCK_MONOTONIC, &start);
+  tsc_warmup();
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
+  int64_t begin = rdtsc_s();
   for (int i = 0; i < iterations; i++) {
     map = mmap(0, mapSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
   }
+  int64_t end = rdtsc_e ();
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
-  clock_gettime(CLOCK_MONOTONIC, &end);
-  double elapsed = get_elapsed_in_s(start, end);
-  printf("%.12f\n", elapsed / iterations);
+//  clock_gettime(CLOCK_MONOTONIC, &end);
+//  double elapsed = get_elapsed_in_s(start, end);
+  double elapsed = end - begin;
+  printf("%.12f\n", elapsed / iterations / freq);
   return 0;
 }

@@ -57,7 +57,10 @@ if __name__ == '__main__':
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        out_file = Path(f'exp1_withwarmupinsideprocess/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        if WARMUP_IT == 0:
+            out_file = Path(f'exp1/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        else:
+            out_file = Path(f'exp1_withwarmupinsideprocess_{WARMUP_IT}/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:

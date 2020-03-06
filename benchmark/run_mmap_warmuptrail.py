@@ -13,7 +13,7 @@ import docker
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
 CMDS = ['bin/mmap_anon_nofree']
 
-WARMUP = 5
+WARMUP = 2
 TRIALS = 10
 #ITERATIONS = 100000
 MEM_LIMIT_G = 50
@@ -47,13 +47,15 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--runtime', default='runc')
     parser.add_argument('--iterations', default=100000)
+    parser.add_argument('--warmup', default=2)
     args = parser.parse_args()
     runtime = args.runtime
     ITERATIONS = int(args.iterations)
+    WARMUP = int(args.warmup)
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        out_file = Path(f'exp1_withwarmuptrail/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        out_file = Path(f'exp1_withwarmuptrail_{WARMUP}/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
