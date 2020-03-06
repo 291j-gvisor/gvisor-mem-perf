@@ -13,7 +13,7 @@ import docker
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
 CMDS = ['bin/mmap_anon_nofree']
 
-WARMUP_TRIAL = 1
+WARMUP_TRIAL = 2
 WARMUP_IT = -1
 TRIALS = 10
 #ITERATIONS = 100000

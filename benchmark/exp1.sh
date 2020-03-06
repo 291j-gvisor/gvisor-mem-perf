@@ -62,13 +62,13 @@ sleep 10
 #nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=500000 --warmupiteration=100000
 #nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=500000 --warmupiteration=100000
 
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=100000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=100000
 nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=100000
 
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=250000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=250000
 nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=250000
 
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=500000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=500000
 nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=500000
 #
 # with 2 warmup trails in one docker and 100000 warmup iterations inside process
