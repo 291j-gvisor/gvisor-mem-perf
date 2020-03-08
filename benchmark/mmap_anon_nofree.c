@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include "util.h"
 
+const int64_t MEM_MAX = 50*1024*(int64_t)1048576;
+
 int main(int argc, char *argv[]) {
   // parse command line args
   if (argc != 4 && argc != 3) {
@@ -34,7 +36,7 @@ int main(int argc, char *argv[]) {
     maparr[warmupIt++] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (warmupIt % 1000 == 0) {
       clock_gettime(CLOCK_MONOTONIC, &e);
-      if (get_elapsed_in_s(s, e) >= warmupTime) break;
+      if (get_elapsed_in_s(s, e) >= warmupTime || warmupIt * warmupSize > MEM_MAX) break;
       if (arrlength - warmupIt <= 2000) {
         arrlength = 2 * arrlength;
         maparr = realloc(maparr, arrlength * sizeof(void*));
@@ -48,7 +50,7 @@ int main(int argc, char *argv[]) {
     munmap(maparr[i], warmupSize);  
   }
   free(maparr);
-//  printf("warm up takes %lf seconds\n", get_elapsed_in_s(s, e));
+//  printf("%d iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
   
   void * map;
   tsc_warmup();
