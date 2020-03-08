@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
   // parse command line args
   if (argc != 4 && argc != 3) {
-    printf("ERROR: Usage: ./mmap_* <iterations> <mmap size> [warmup iterations]\n");
+    printf("ERROR: Usage: ./mmap_* <iterations> <mmap size> [warmup time]\n");
     return 1;
   }
 
@@ -18,25 +18,38 @@ int main(int argc, char *argv[]) {
   unsigned long iterations = strtoul(argv[1], NULL, 10);
   unsigned long mapSize = strtoul(argv[2], NULL, 10);
   unsigned long offset = 0;
-  unsigned long warmupIt = 65536/mapSize*100000;
+  unsigned long warmupIt = 0;
+  double warmupTime = 2.0;
   unsigned long warmupSize = mapSize;
+  unsigned long arrlength = 500000;
   if (argc == 4) {
-    warmupIt = strtoul(argv[3], NULL, 10);
+    warmupTime = strtoul(argv[3], NULL, 10);
   }
 
-  void **maparr = malloc(sizeof(void*)*warmupIt);
+  void **maparr = malloc(sizeof(void*)*arrlength);
   // warmup
-//  struct timespec start, end;
-//  clock_gettime(CLOCK_MONOTONIC, &start);
-  for (int i = 0; i < warmupIt; ++i) {
-    maparr[i] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+  struct timespec s, e;
+  clock_gettime(CLOCK_MONOTONIC, &s);
+  while (1) {
+    maparr[warmupIt++] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (warmupIt % 1000 == 0) {
+      clock_gettime(CLOCK_MONOTONIC, &e);
+      if (get_elapsed_in_s(s, e) >= warmupTime) break;
+      if (arrlength - warmupIt <= 2000) {
+        arrlength = 2 * arrlength;
+        maparr = realloc(maparr, arrlength * sizeof(void*));
+      }
+    }
   }
+//  for (int i = 0; i < warmupIt; ++i) {
+//    maparr[i] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+//  }
   for (int i = 0; i < warmupIt; ++i) {
     munmap(maparr[i], warmupSize);  
   }
   free(maparr);
-//  clock_gettime(CLOCK_MONOTONIC, &end);
-//  printf("warm up takes %lf seconds\n", get_elapsed_in_s(start, end));
+//  printf("warm up takes %lf seconds\n", get_elapsed_in_s(s, e));
+  
   void * map;
   tsc_warmup();
 //printf("///////////////////////////////////////////////////\n");

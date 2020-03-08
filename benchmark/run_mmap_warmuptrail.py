@@ -14,17 +14,23 @@ import docker
 CMDS = ['bin/mmap_anon_nofree']
 
 WARMUP_TRIAL = 2
-WARMUP_IT = -1
+WARMUP_TIME = -1
 TRIALS = 10
 #ITERATIONS = 100000
 MEM_LIMIT_G = 50
 MEM_LIMIT = 1024*1024*1024*MEM_LIMIT_G
 MMAP_SIZES = [
+#    1024 * 1,
+#    1024 * 2,
     1024 * 4,
+#    1024 * 8,
     1024 * 16,
+#    1024 * 32,
     1024 * 64,
+#    1024 * 128,
 #    1024 * 256,
-#    1024 * 1024,
+#    1024 * 512,
+#    1024 * 1024
 ]
 
 # Global preparations
@@ -49,26 +55,26 @@ if __name__ == '__main__':
     parser.add_argument('--runtime', default='runc')
     parser.add_argument('--iterations', default=100000)
     parser.add_argument('--warmuptrail', default=2)
-    parser.add_argument('--warmupiteration', default=-1)
+    parser.add_argument('--warmuptime', default=-1)
     args = parser.parse_args()
     runtime = args.runtime
     ITERATIONS = int(args.iterations)
     WARMUP_TRIAL = int(args.warmuptrail)
-    WARMUP_IT = int(args.warmupiteration)
+    WARMUP_TIME = int(args.warmuptime)
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        if WARMUP_IT == -1: 
-            out_file = Path(f'exp1_warmup_{WARMUP_TRIAL}_adaptive/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        if WARMUP_TIME == -1: 
+            out_file = Path(f'exp2_warmup_{WARMUP_TRIAL}_adaptive/{runtime}({ITERATIONS})/{cmd_name}.csv')
         else:
-            out_file = Path(f'exp1_warmup_{WARMUP_TRIAL}_{WARMUP_IT}/{runtime}({ITERATIONS})/{cmd_name}.csv')
+            out_file = Path(f'exp2_warmup_{WARMUP_TRIAL}_{WARMUP_TIME}/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
             f.write('mmap_size,latency\n')
             for mmap_size in MMAP_SIZES:
                 iterations = MEM_LIMIT/mmap_size if ITERATIONS * mmap_size > MEM_LIMIT else ITERATIONS 
-                full_cmd = f'{cmd} {iterations} {mmap_size}' if WARMUP_IT == -1 else f'{cmd} {iterations} {mmap_size} {WARMUP_IT}'
+                full_cmd = f'{cmd} {iterations} {mmap_size}' if WARMUP_TIME == -1 else f'{cmd} {iterations} {mmap_size} {WARMUP_TIME}'
                 stdout = run(full_cmd, runtime=runtime)
                 elapsed_time = stdout.split('\n')
                 for i in range(WARMUP_TRIAL,TRIALS+WARMUP_TRIAL-1):
