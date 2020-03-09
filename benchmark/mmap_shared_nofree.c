@@ -7,10 +7,12 @@
 #include <unistd.h>
 #include "util.h"
 
+const int64_t MEM_MAX = 50*1024*(int64_t)1048576;
+
 int main(int argc, char *argv[]) {
   // parse command line args
   if (argc != 4 && argc != 3) {
-    printf("ERROR: Usage: ./mmap_* <iterations> <mmap size> [warmup iterations]\n");
+    printf("ERROR: Usage: ./mmap_* <iterations> <mmap size> [warmup time]\n");
     return 1;
   }
 
@@ -23,40 +25,51 @@ int main(int argc, char *argv[]) {
   unsigned long warmupSize = mapSize;
   unsigned long arrlength = 500000;
   if (argc == 4) {
-    warmupIt = strtoul(argv[3], NULL, 10);
+    warmupTime = strtod(argv[3], NULL);
   }
+//  printf("%lf\n",warmupTime);
 
-  void **maparr = malloc(sizeof(void*)*warmupIt);
-  // warmup
+  int fd = open("data", O_RDWR | O_CREAT | O_TRUNC, 0600); 
+//  printf("%ld\n", mapSize);
+//  lseek(fd, mapSize, SEEK_SET);
+  for (int i = 0;i < mapSize;++i) write(fd, "X", 1);
+
+  void **maparr = malloc(sizeof(void*)*arrlength);
+  
+  /********* warmup *********/
   struct timespec s, e;
   clock_gettime(CLOCK_MONOTONIC, &s);
   while (1) {
-    maparr[warmupIt++] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    maparr[warmupIt++] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (maparr[warmupIt-1] == -1) {
+      printf("%ld\n", warmupIt-1);
+      perror("mmap");
+      return -1;
+    }
     if (warmupIt % 1000 == 0) {
       clock_gettime(CLOCK_MONOTONIC, &e);
-      if (get_elapsed_in_s(s, e) >= warmupTime) break;
-      if (arrlength - warmupIt <= 2000) {
+      if (get_elapsed_in_s(s, e) >= warmupTime || warmupIt * warmupSize > MEM_MAX || warmupIt >= 2621440-1000) break;
+      if (arrlength - warmupIt <= 2000) { 
         arrlength = 2 * arrlength;
+
         maparr = realloc(maparr, arrlength * sizeof(void*));
+        if (maparr==0) {
+          perror("realloc");
+          return -1;   
+        }
       }
     }
   }
-//  for (int i = 0; i < warmupIt; ++i) {
-//    maparr[i] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-//  }
   for (int i = 0; i < warmupIt; ++i) {
     munmap(maparr[i], warmupSize);  
   }
   free(maparr);
-//  printf("warm up takes %lf seconds\n", get_elapsed_in_s(s, e));
-
-  int fd = open("data", O_RDWR | O_CREAT | O_TRUNC, 0600); 
-  printf("%ld\n", mapSize);
-  lseek(fd, mapSize, SEEK_SET);
+  printf("%ld iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
 
   void * map;
   tsc_warmup();
 
+  /********* benchmark *********/
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
@@ -75,5 +88,6 @@ int main(int argc, char *argv[]) {
 
   double elapsed = end - begin;
   printf("%.12f\n", elapsed / iterations / freq);
+  close(fd);
   return 0;
 }

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   unsigned long warmupSize = mapSize;
   unsigned long arrlength = 500000;
   if (argc == 4) {
-    warmupTime = strtoul(argv[3], NULL, 10);
+    warmupTime = strtod(argv[3], NULL);
   }
 
   void **maparr = malloc(sizeof(void*)*arrlength);
@@ -34,12 +34,21 @@ int main(int argc, char *argv[]) {
   clock_gettime(CLOCK_MONOTONIC, &s);
   while (1) {
     maparr[warmupIt++] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (maparr[warmupIt-1] == -1) {
+      printf("%ld\n", warmupIt-1);
+      perror("mmap");
+      return -1;
+    }
     if (warmupIt % 1000 == 0) {
       clock_gettime(CLOCK_MONOTONIC, &e);
-      if (get_elapsed_in_s(s, e) >= warmupTime || warmupIt * warmupSize > MEM_MAX) break;
+      if (get_elapsed_in_s(s, e) >= warmupTime || warmupIt * warmupSize > MEM_MAX || warmupIt >= 2621440-1000) break;
       if (arrlength - warmupIt <= 2000) {
         arrlength = 2 * arrlength;
         maparr = realloc(maparr, arrlength * sizeof(void*));
+        if (maparr==0) {
+          perror("realloc");
+          return -1;   
+        }
       }
     }
   }
@@ -50,7 +59,7 @@ int main(int argc, char *argv[]) {
     munmap(maparr[i], warmupSize);  
   }
   free(maparr);
-//  printf("%d iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
+  printf("%ld iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
   
   void * map;
   tsc_warmup();
