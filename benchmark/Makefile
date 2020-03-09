@@ -5,7 +5,7 @@ BINS = $(patsubst ./%.c,$(BINDIR)/%,$(shell find . -name '*.c'))
 all: $(BINS)
 
 $(BINS): $(BINDIR)/%: %.c util.h | $(BINDIR)
-	gcc -std=gnu99 -o $@ $<
+	gcc -std=gnu99 -g -o $@ $<
 
 $(BINDIR):
 	mkdir $@

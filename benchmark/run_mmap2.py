@@ -11,11 +11,13 @@ import docker
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
-CMDS = ['bin/mmap_shared_nofree','bin/mmap_shared_free']
+CMDS = ['bin/mmap_anon_nofree']
 
+WARMUP_TRIAL = 2
+WARMUP_TIME = -1
 TRIALS = 10
 #ITERATIONS = 100000
-MEM_LIMIT_G = 52
+MEM_LIMIT_G = 50
 MEM_LIMIT = 1024*1024*1024*MEM_LIMIT_G
 MMAP_SIZES = [
     1024 * 1,
@@ -34,43 +36,48 @@ MMAP_SIZES = [
 # Global preparations
 os.chdir(Path(__file__).parent)
 docker_client = docker.from_env()
-image, _ = docker_client.images.build(path='.')
+image, _ = docker_client.images.build(path='.', tag='mmap_test')
 
 def run(cmd, runtime='native'):
-    if runtime == 'native':
-        return run_native(cmd)
-    else:
-        return run_docker(cmd, runtime)
-
-def run_native(cmd):
-    cp = sp.run(cmd, shell=True, stdout=sp.PIPE)
-    return cp.stdout.decode().strip()
+    return run_docker(cmd, runtime)
 
 def run_docker(cmd, runtime='runc'):
-    stdout = docker_client.containers.run(image, command=cmd, runtime=runtime, remove=True, mem_limit=str(MEM_LIMIT_G+2)+'g')
+    realcmd = '/bin/bash -c "'+cmd
+    for i in range(TRIALS+WARMUP_TRIAL-1):
+        realcmd += '; ' + cmd
+    realcmd+='"'
+#    print(realcmd)
+    stdout = docker_client.containers.run(image, command=realcmd, runtime=runtime, remove=True, mem_limit=str(MEM_LIMIT_G+2)+'g')
     return stdout.decode().strip()
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument('--runtime', default='native')
+    parser.add_argument('--runtime', default='runc')
     parser.add_argument('--iterations', default=100000)
+    parser.add_argument('--warmuptrail', default=2)
+    parser.add_argument('--warmuptime', default=-1)
     args = parser.parse_args()
     runtime = args.runtime
     ITERATIONS = int(args.iterations)
+    WARMUP_TRIAL = int(args.warmuptrail)
+    WARMUP_TIME = int(args.warmuptime)
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
-        out_file = Path(f'data2/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        if WARMUP_TIME == -1: 
+            out_file = Path(f'exp2_warmup_{WARMUP_TRIAL}_2s/{runtime}({ITERATIONS})/{cmd_name}.csv')
+        else:
+            out_file = Path(f'exp2_warmup_{WARMUP_TRIAL}_{WARMUP_TIME}s/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
-            f.write('mmap_size,elapsed_time\n')
+            f.write('mmap_size,latency\n')
             for mmap_size in MMAP_SIZES:
-                iterations = MEM_LIMIT/mmap_size if ITERATIONS * mmap_size > MEM_LIMIT else ITERATIONS
-                for trial in range(TRIALS):
-                    full_cmd = f'{cmd} {iterations} {mmap_size}'
-                    stdout = run(full_cmd, runtime=runtime)
-                    elapsed_time = stdout.strip()
-                    line = f'{mmap_size},{elapsed_time}'
+                iterations = MEM_LIMIT/mmap_size if ITERATIONS * mmap_size > MEM_LIMIT else ITERATIONS 
+                full_cmd = f'{cmd} {iterations} {mmap_size}' if WARMUP_TIME == -1 else f'{cmd} {iterations} {mmap_size} {WARMUP_TIME}'
+                stdout = run(full_cmd, runtime=runtime)
+                elapsed_time = stdout.split('\n')
+                for i in range(WARMUP_TRIAL,TRIALS+WARMUP_TRIAL-1):
+                    line = f'{mmap_size},{elapsed_time[i]}'
                     print(line)
                     f.write(f'{line}\n')
