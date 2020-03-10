@@ -4,3 +4,6 @@
 [submodule "extern/gvisor-dev"]
 	path = extern/gvisor-dev
 	url = https://github.com/291j-gvisor/gvisor.git
+[submodule "profiling/FlameGraph"]
+	path = profiling/FlameGraph
+	url = https://github.com/brendangregg/FlameGraph
