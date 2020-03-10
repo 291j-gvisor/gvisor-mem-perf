@@ -89,10 +89,9 @@ sudo apt-get install -y \
 sudo adduser "$(id -un)" kvm
 sudo adduser "$(id -un)" libvirt
 
-# Configure Docker for gVisor
+# Install gVisor runtimes in Docker
 # https://gvisor.dev/docs/user_guide/quick_start/docker/#configuring-docker
-sudo cp daemon.json /etc/docker/daemon.json
-sudo systemctl restart docker
+./script/install-gvisor-runtimes.sh
 
 # Install Go
 # https://github.com/golang/go/wiki/Ubuntu
