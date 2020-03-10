@@ -3,24 +3,24 @@
 sleep 10
 
 # the selected one
-#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=100000
-#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=100000
-#
-#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=250000
-#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=250000
-#
-#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=500000
-#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=500000
+nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=100000
+nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=100000
+
+nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=250000
+nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=250000
+
+nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=500000
+nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=500000
 
 # for shared
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=10000
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=10000
-
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=25000
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=25000
-
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=5000
-nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=5000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=10000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=10000
+#
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=25000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=25000
+#
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runc --iterations=5000
+#nice -20 taskset 0x1 python3 run_mmap_warmuptrail.py --runtime=runsc-kvm --iterations=5000
 
 
 # without any warmup  

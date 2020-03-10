@@ -11,7 +11,7 @@ import docker
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
-CMDS = ['bin/mmap_shared_nofree']
+CMDS = ['bin/mmap_anon_nofree']
 
 WARMUP_TRIAL = 2
 WARMUP_TIME = -1
@@ -22,9 +22,9 @@ MEM_LIMIT = 1024*1024*1024*MEM_LIMIT_G
 MMAP_SIZES = [
 #    1024 * 1,
 #    1024 * 2,
-    1024 * 4,
+#    1024 * 4,
 #    1024 * 8,
-    1024 * 16,
+#    1024 * 16,
 #    1024 * 32,
     1024 * 64,
 #    1024 * 128,

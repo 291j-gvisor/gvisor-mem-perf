@@ -8,7 +8,7 @@ import pandas as pd
 import seaborn as sns
 
 THIS_DIR = Path(__file__).absolute().parent
-iterations = 50000
+iterations = 25000
 
 def read_data(data_dir):
     df = pd.DataFrame()

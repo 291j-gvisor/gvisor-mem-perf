@@ -11,7 +11,7 @@ import docker
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
-CMDS = ['bin/mmap_anon_nofree']
+CMDS = ['bin/mmap_shared_nofree']
 
 WARMUP_TRIAL = 2
 WARMUP_TIME = -1
@@ -65,9 +65,9 @@ if __name__ == '__main__':
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
         if WARMUP_TIME == -1: 
-            out_file = Path(f'exp2_warmup_{WARMUP_TRIAL}_2s/{runtime}({ITERATIONS})/{cmd_name}.csv')
+            out_file = Path(f'exp2_shared_warmup_{WARMUP_TRIAL}_2s/{runtime}({ITERATIONS})/{cmd_name}.csv')
         else:
-            out_file = Path(f'exp2_warmup_{WARMUP_TRIAL}_{WARMUP_TIME}s/{runtime}({ITERATIONS})/{cmd_name}.csv')
+            out_file = Path(f'exp2_shared_warmup_{WARMUP_TRIAL}_{WARMUP_TIME}s/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
