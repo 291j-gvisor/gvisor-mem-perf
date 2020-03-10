@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   // warmup
   struct timespec s, e;
   clock_gettime(CLOCK_MONOTONIC, &s);
-  while (1) {
+  while (1 && warmupTime) {
     maparr[warmupIt++] = mmap(0, warmupSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (maparr[warmupIt-1] == -1) {
       printf("%ld\n", warmupIt-1);
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     munmap(maparr[i], warmupSize);  
   }
   free(maparr);
-  printf("%ld iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
+//  if (e.tv_nsec != 0)printf("%ld iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
   
   void * map;
   tsc_warmup();
