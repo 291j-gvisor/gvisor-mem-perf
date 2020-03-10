@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     }
     if (warmupIt % 1000 == 0) {
       clock_gettime(CLOCK_MONOTONIC, &e);
-      if (get_elapsed_in_s(s, e) >= warmupTime || warmupIt * warmupSize > MEM_MAX || warmupIt >= 2621440-1000) break;
+      if (get_elapsed_in_s(s, e) >= warmupTime || (warmupIt+1000) * warmupSize > MEM_MAX || warmupIt >= 2621440-1000) break;
       if (arrlength - warmupIt <= 2000) { 
         arrlength = 2 * arrlength;
 
