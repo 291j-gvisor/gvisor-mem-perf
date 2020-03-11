@@ -11,7 +11,7 @@ import docker
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
-CMDS = ['bin/mmap_anon_nofree']
+CMDS = ['bin/mmap_private_nofree']
 
 WARMUP_TRIAL = 2
 WARMUP_TIME = -1
@@ -22,9 +22,9 @@ MEM_LIMIT = 1024*1024*1024*MEM_LIMIT_G
 MMAP_SIZES = [
 #    1024 * 1,
 #    1024 * 2,
-#    1024 * 4,
+    1024 * 4,
 #    1024 * 8,
-#    1024 * 16,
+    1024 * 16,
 #    1024 * 32,
     1024 * 64,
 #    1024 * 128,
@@ -64,10 +64,11 @@ if __name__ == '__main__':
 
     for cmd in CMDS:
         cmd_name = cmd.split('/')[-1]
+        mmap_mode = cmd_name.split('_')[1]
         if WARMUP_TIME == -1: 
-            out_file = Path(f'exp1_warmup_{WARMUP_TRIAL}_2s/{runtime}({ITERATIONS})/{cmd_name}.csv')
+            out_file = Path(f'exp1_{mmap_mode}/{runtime}({ITERATIONS})/{cmd_name}.csv')
         else:
-            out_file = Path(f'exp1_warmup_{WARMUP_TRIAL}_{WARMUP_TIME}/{runtime}({ITERATIONS})/{cmd_name}.csv')
+            out_file = Path(f'exp1_{mmap_mode}_{WARMUP_TIME}s/{runtime}({ITERATIONS})/{cmd_name}.csv')
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
