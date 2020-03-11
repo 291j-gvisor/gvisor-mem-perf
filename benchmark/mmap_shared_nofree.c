@@ -66,6 +66,15 @@ int main(int argc, char *argv[]) {
   free(maparr);
 //  if (e.tv_nsec != 0)printf("%ld iterations' warm up takes %lf seconds\n", warmupIt,get_elapsed_in_s(s, e));
 
+  /********* marker for benchmark begin *********/
+  struct timespec tim, tim2;
+  tim.tv_sec = 0;
+  tim.tv_nsec = 50;
+  if(nanosleep(&tim , &tim2) < 0 ) {
+    printf("Nano sleep system call failed \n");
+    return -1;
+  }
+
   void * map;
   tsc_warmup();
   /********* benchmark *********/
@@ -74,11 +83,13 @@ int main(int argc, char *argv[]) {
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
+  printf("/***********************benchmark starts***********************/\n");
   int64_t begin = rdtsc_s();
   for (int i = 0; i < iterations; i++) {
     map = mmap(NULL, mapSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   }
   int64_t end = rdtsc_e ();
+  printf("/************************benchmark ends************************/\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");

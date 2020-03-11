@@ -7,7 +7,7 @@ sleep 10
 #nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runsc-kvm --iterations=25000
 #nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runsc-dev --iterations=50000
 
-nice -20 taskset 0x1 python3 run_mmap2_timer.py --runtime=runsc-dev --iterations=50000
+#nice -20 taskset 0x1 python3 run_mmap2_timer.py --runtime=runsc-dev --iterations=50000
 
 # without any warmup
 #nice -20 taskset 0x1 ./run_mmap.py --runtime=runc --iterations=100000
