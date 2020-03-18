@@ -57,12 +57,16 @@ args = parser.parse_args()
 data_dir = args.data_dir
 
 df = read_data(data_dir)
-for label in sorted(set(df['label'])):
-    df_label = df[df['label'] == label][['size', 'cycles']]
-    stat = df_label.groupby('size').median()
-    plt.plot(stat.index, stat['cycles'], alpha=0.8, label=label)
-plt.xlabel('size (KB)')
-plt.ylabel('cycles')
-plt.title('time report exp2')
-plt.legend()
-plt.savefig(data_dir / 'result.pdf')
+
+sns.set(style='white', palette=['#70309F', '#4472C4', '#70AC47'])
+ax = sns.pointplot(
+    x=df['size'], y=df['cycles'], hue=df['label'], kind="point",
+    ci=None, estimator=np.median
+)
+ax.set_title('Average cost of sub-functions vs. mmap size (fixed 50000 iterations)')
+ax.set_xlabel('mmap size (KB)')
+ax.set_ylabel('Cycles')
+handles, _ = ax.get_legend_handles_labels()
+ax.legend(handles, ["createVMALocked", "getPMAsLocked", "mapASLocked"])
+plt.tight_layout()
+plt.savefig(data_dir / 'result.png', dpi=400)

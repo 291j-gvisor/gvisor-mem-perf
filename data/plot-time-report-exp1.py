@@ -61,8 +61,9 @@ for iterations in sorted(set(df['iterations'])):
     df_iter = df[df['iterations'] == iterations][['line_num', 'cycles']]
     grp = df_iter.groupby('line_num').median()
     plt.plot(grp.index, grp['cycles'], alpha=0.8, label=str(iterations))
-plt.xlabel('iteration')
-plt.ylabel('cycles')
-plt.title('time report exp1')
+plt.xlabel('Iteration')
+plt.ylabel('Cycles')
+plt.title('Cost of a createVMAlocked() vs. iterations of mmap ahead')
 plt.legend()
-plt.savefig(data_dir / 'result.pdf')
+plt.tight_layout()
+plt.savefig(data_dir / 'result.png', dpi=400)

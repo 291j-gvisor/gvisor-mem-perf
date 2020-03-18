@@ -23,17 +23,17 @@ def read_data(free_or_not):
             df_['label'] = f'{touch_or_not}+{runtime}'
             df = df.append(df_)
     df['malloc_size_kb'] = df['malloc_size'] // 1024
-    df['allocs_per_sec'] = 1 / df['elapsed_time']
+    df['ops_per_sec'] = 1 / df['elapsed_time']
     return df
 
 def make_plot(free_or_not):
     df = read_data(free_or_not)
     g = sns.catplot(
-        x='malloc_size_kb', y='allocs_per_sec', hue='label', data=df,
+        x='malloc_size_kb', y='ops_per_sec', hue='label', data=df,
         kind='bar', ci=None, height=3.5, aspect=3.5/3.5, legend_out=False
     )
     (g
-        .set_axis_labels('malloc Size (KB)', 'Operation Rate (Hz)')
+        .set_axis_labels('malloc size (KB)', 'Operations per second')
         # .set_xticklabels(['private', 'shared', 'anonymous'])
         # .set(ylim=(1e3, 1e7))
     )
@@ -46,4 +46,4 @@ def make_plot(free_or_not):
 
 for free_or_not in ['free', 'nofree']:
     make_plot(free_or_not)
-    plt.savefig(f'malloc_{free_or_not}.pdf')
+    plt.savefig(f'malloc_{free_or_not}.png', dpi=400)
