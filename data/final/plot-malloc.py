@@ -18,13 +18,13 @@ DATA_DIR = THIS_DIR.parent
 def read_data(free_or_not, data_dir):
     df = pd.DataFrame()
     for touch_or_not in ['notouch', 'touch']:
-        for runtime in ['native', 'runc', 'runsc']:
+        for runtime in ['native', 'runc', 'runsc', 'runsc-kvm']:
             base_dir = data_dir / runtime
             df_ = pd.read_csv(base_dir / f'malloc_{touch_or_not}_{free_or_not}.csv')
             df_['label'] = f'{touch_or_not}+{runtime}'
             df = df.append(df_)
     df['malloc_size_kb'] = df['malloc_size'] // 1024
-    df['ops_per_sec'] = 1 / df['elapsed_time']
+    df['ops_per_sec'] = 1 / df['latency']
     return df
 
 def make_plot(free_or_not, data_dir):
@@ -43,7 +43,7 @@ def make_plot(free_or_not, data_dir):
     g.axes[0][0].legend_.remove()
     g.fig.legend(h, l, ncol=2)
     g.fig.tight_layout()
-    g.fig.subplots_adjust(top=0.75)
+    g.fig.subplots_adjust(top=0.7)
 
 # Parse arguments
 parser = ArgumentParser()

@@ -17,16 +17,7 @@ MAX_MEM = 512*1024*1024
 MMAP_THRESHOLD = 128*1024
 TRIALS = 10
 ITERATIONS = 100000
-MALLOC_SIZES = [
-    1024 * 4,
-    1024 * 8,
-    1024 * 16,
-    1024 * 32,
-    1024 * 64,
-    1024 * 128,
-    1024 * 256,
-    1024 * 1024,
-]
+MALLOC_SIZES = [1024 * 2**i for i in range(11)]  # B
 
 # Global preparations
 os.chdir(Path(__file__).parent)
@@ -58,7 +49,7 @@ if __name__ == '__main__':
         os.makedirs(out_file.parent, exist_ok=True)
         print(out_file)
         with out_file.open('w') as f:
-            header_line = 'malloc_size,elapsed_time'
+            header_line = 'malloc_size,latency'
             print(header_line)
             f.write(f'{header_line}\n')
             for malloc_size in MALLOC_SIZES:

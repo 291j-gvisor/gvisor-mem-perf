@@ -6,7 +6,7 @@ RESULTS += prof-iter.pdf prof-size.pdf
 all: $(RESULTS)
 
 malloc.pdf:
-	./plot-malloc.py ../gcp-n1-standard-4 $@
+	./plot-malloc.py ../gcp-malloc $@
 
 mmap-iter-anon.pdf:
 	./plot-exp1.py -m mmap_anon_nofree ../exp1_anon $@
