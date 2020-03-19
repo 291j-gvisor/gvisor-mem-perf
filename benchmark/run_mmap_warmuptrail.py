@@ -11,7 +11,7 @@ import docker
 # Configurations
 # https://github.com/EthanGYoung/gvisor_analysis/blob/master/configs/memory_config.sh
 #CMDS = ['bin/mmap_private_nofree','bin/mmap_anon_nofree','bin/mmap_shared_nofree','bin/mmap_private_free','bin/mmap_anon_free','bin/mmap_shared_free']
-CMDS = ['bin/mmap_private_nofree']
+CMDS = ['bin/mmap_shared_nofree']
 
 WARMUP_TRIAL = 2
 WARMUP_TIME = -1

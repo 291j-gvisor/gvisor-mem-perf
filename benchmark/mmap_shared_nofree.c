@@ -27,12 +27,9 @@ int main(int argc, char *argv[]) {
   if (argc == 4) {
     warmupTime = strtod(argv[3], NULL);
   }
-//  printf("%lf\n",warmupTime);
 
   int fd = open("data", O_RDWR | O_CREAT | O_TRUNC, 0600); 
-//  printf("%ld\n", mapSize);
   lseek(fd, mapSize, SEEK_SET);
-//  for (int i = 0;i < mapSize;++i) write(fd, "X", 1);
 
   void **maparr = malloc(sizeof(void*)*arrlength);
   
@@ -83,13 +80,13 @@ int main(int argc, char *argv[]) {
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
-  printf("/***********************benchmark starts***********************/\n");
+//  printf("/***********************benchmark starts***********************/\n");
   int64_t begin = rdtsc_s();
   for (int i = 0; i < iterations; i++) {
     map = mmap(NULL, mapSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   }
   int64_t end = rdtsc_e ();
-  printf("/************************benchmark ends************************/\n");
+//  printf("/************************benchmark ends************************/\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
 //printf("///////////////////////////////////////////////////\n");
