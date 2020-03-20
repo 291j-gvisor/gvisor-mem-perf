@@ -1,35 +1,39 @@
-RESULTS = malloc.pdf
-RESULTS += mmap-iter-anon.pdf mmap-iter-private.pdf mmap-iter-shared.pdf
-RESULTS += mmap-size-anon.pdf mmap-size-private.pdf mmap-size-shared.pdf
-RESULTS += prof-iter.pdf prof-size.pdf
+EXT = png
+RESULTS = malloc-free.$(EXT) malloc-nofree.$(EXT)
+RESULTS += mmap-iter-anon.$(EXT) mmap-iter-private.$(EXT) mmap-iter-shared.$(EXT)
+RESULTS += mmap-size-anon.$(EXT) mmap-size-private.$(EXT) mmap-size-shared.$(EXT)
+RESULTS += prof-iter.$(EXT) prof-size.$(EXT)
 
 all: $(RESULTS)
 
-malloc.pdf:
+malloc-free.$(EXT):
+	./plot-malloc.py --free ../gcp-malloc $@
+
+malloc-nofree.$(EXT):
 	./plot-malloc.py ../gcp-malloc $@
 
-mmap-iter-anon.pdf:
-	./plot-exp1.py -m mmap_anon_nofree ../exp1_anon $@
+mmap-iter-anon.$(EXT):
+	./plot-exp1.py ../exp1_anon $@
 
-mmap-iter-private.pdf:
-	./plot-exp1.py -m mmap_private_nofree ../exp1_private $@
+mmap-iter-private.$(EXT):
+	./plot-exp1.py ../exp1_private $@
 
-mmap-iter-shared.pdf:
-	./plot-exp1.py -m mmap_shared_nofree ../exp1_shared $@
+mmap-iter-shared.$(EXT):
+	./plot-exp1.py ../exp1_shared $@
 
-mmap-size-anon.pdf:
-	./plot-exp2.py -m mmap_anon_nofree ../exp2_anon $@
+mmap-size-anon.$(EXT):
+	./plot-exp2.py ../exp2_anon $@
 
-mmap-size-private.pdf:
-	./plot-exp2.py -m mmap_private_nofree ../exp2_private $@
+mmap-size-private.$(EXT):
+	./plot-exp2.py ../exp2_private $@
 
-mmap-size-shared.pdf:
-	./plot-exp2.py -m mmap_shared_nofree ../exp2_shared $@
+mmap-size-shared.$(EXT):
+	./plot-exp2.py ../exp2_shared $@
 
-prof-iter.pdf:
+prof-iter.$(EXT):
 	./plot-time-report-exp1.py ../time_exp1_shared $@
 
-prof-size.pdf:
+prof-size.$(EXT):
 	./plot-time-report-exp2.py ../time_exp2_anon $@
 
 clean:
