@@ -29,6 +29,7 @@ def read_data(free_or_not, data_dir):
 
 def make_plot(free_or_not, data_dir):
     df = read_data(free_or_not, data_dir)
+    df = df[df['malloc_size_kb'] > 2]
     g = sns.catplot(
         x='malloc_size_kb', y='ops_per_sec', hue='label', data=df,
         kind='bar', ci=None, height=3.5, aspect=3.5/3.5, legend_out=False
