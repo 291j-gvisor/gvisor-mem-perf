@@ -17,14 +17,15 @@ data_dir = args.data_dir
 # Read data
 df = tb.read_exp_mmap(data_dir)
 df = df[df["mmap_size_kb"].isin([1, 64, 128, 256, 512, 1024])]
-df = df.append({"mmap_size_kb": 3}, ignore_index=True)
-df["mmap_size_kb"] = df["mmap_size_kb"].astype(int)
-operation = df["operation"].iloc[0]
 
 df1 = df[df['runtime'] == 'runc']
 if 'anon' in data_dir.name:
     df2 = df[(df['runtime'] != 'runc') & (df['iterations'] == 25000)]
-df = df1.append(df2)
+    df = df1.append(df2)
+
+df = df.append({"mmap_size_kb": 3}, ignore_index=True)
+df["mmap_size_kb"] = df["mmap_size_kb"].astype(int)
+operation = df["operation"].iloc[0]
 
 # Make plot
 sns.set(context="paper", style="white", font="serif", font_scale=0.8)
