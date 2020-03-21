@@ -29,10 +29,10 @@ for data_file in sorted(data_dir.iterdir()):
 
 # Make plot
 sns.set(
-    context="paper", style="white", font="serif",
+    context="paper", style="white", font="serif", font_scale=0.8
 )
 # sns.set(style='white', palette=['#70309F', '#4472C4', '#70AC47'])
-plt.figure(figsize=(4.2, 3.15))
+plt.figure(figsize=(3.2, 2.4))
 ax = sns.pointplot(
     x="size", y="cycles", hue="label", data=df, ci=None, estimator=np.median
 )

@@ -22,7 +22,7 @@ df = df[df["runtime"].isin(["runc", "runsc-kvm"])]
 operation = df["operation"].iloc[0]
 
 # Make plot
-sns.set(context="paper", style="white", font="serif", font_scale=1.5)
+sns.set(context="paper", style="white", font="serif", font_scale=0.8)
 g = sns.catplot(
     x="iterations",
     y="latency_ms",
@@ -31,7 +31,7 @@ g = sns.catplot(
     data=df,
     kind="bar",
     ci=None,
-    height=4.2,
+    height=2.4,
     aspect=4 / 3,
     legend_out=False,
 )
@@ -40,7 +40,7 @@ g.set_axis_labels("Iterations", "Latency (ms)")
 h, l = g.axes[0][0].get_legend_handles_labels()
 g.axes[0][0].legend_.remove()
 g.fig.legend(h, l, ncol=3, title="mmap size (KB)",
-    bbox_to_anchor=(0.31, 0.7), loc="center")
+    bbox_to_anchor=(0.32, 0.7), loc="center")
 g.fig.tight_layout()
 g.fig.subplots_adjust(top=0.9)
 g.savefig(args.output, dpi=400)

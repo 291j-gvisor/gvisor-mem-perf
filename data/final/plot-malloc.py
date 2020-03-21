@@ -35,7 +35,7 @@ else:
 df.sort_values(by=["operation", "runtime"], inplace=True)
 
 # Make plot
-sns.set(context="paper", style="white", font="serif", font_scale=1.5)
+sns.set(context="paper", style="white", font="serif", font_scale=0.8)
 g = sns.catplot(
     x="malloc_size_kb",
     y="ops_per_sec",
@@ -43,7 +43,7 @@ g = sns.catplot(
     data=df,
     kind="bar",
     ci=None,
-    height=4.2,
+    height=2.4,
     aspect=4 / 3,
     legend_out=False,
 )

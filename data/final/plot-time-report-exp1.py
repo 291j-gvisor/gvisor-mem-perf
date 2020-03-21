@@ -40,12 +40,12 @@ for iterations in sorted(set(df_raw["iterations"])):
 
 # Make plot
 sns.set(
-    context="paper", style="white", font="serif",
+    context="paper", style="white", font="serif", font_scale=0.8
 )
-plt.figure(figsize=(4.2, 3.15))
+plt.figure(figsize=(3.2, 2.4))
 for group in sorted(set(df["group"])):
     df_iter = df[df["group"] == group]
-    plt.plot(df_iter["iteration"], df_iter["cycles"], alpha=0.8, label=str(group))
+    plt.plot(df_iter["iteration"], df_iter["cycles"], alpha=0.6, label=str(group))
 plt.xlabel("Iteration")
 plt.ylabel("Cycles")
 plt.legend()

@@ -71,7 +71,7 @@ def show_values_on_bars(axs):
             _x = p.get_x() + p.get_width() / 2
             _y = p.get_y() + p.get_height()
             value = "{:.1f}".format(p.get_height())
-            ax.text(_x, _y, value, ha="center", fontsize=7)
+            ax.text(_x, _y, value, ha="center", fontsize=5)
 
     if isinstance(axs, np.ndarray):
         for idx, ax in np.ndenumerate(axs):

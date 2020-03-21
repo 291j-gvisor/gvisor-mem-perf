@@ -23,7 +23,7 @@ df = df[df["mmap_size_kb"] == args.size]
 operation = df["operation"].iloc[0]
 
 # Make plot
-sns.set(context="paper", style="white", font="serif", font_scale=1.5)
+sns.set(context="paper", style="white", font="serif", font_scale=0.8)
 g = sns.catplot(
     x="iterations",
     y="latency_ms",
@@ -31,7 +31,7 @@ g = sns.catplot(
     data=df,
     kind="bar",
     ci=None,
-    height=4.2,
+    height=2.4,
     aspect=4 / 3,
     legend_out=False,
 )
