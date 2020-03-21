@@ -1,5 +1,7 @@
 EXT = png
 RESULTS = malloc-free.$(EXT) malloc-nofree.$(EXT)
+RESULTS += bench-mmap-iter-anon.$(EXT) bench-mmap-iter-private.$(EXT)
+RESULTS += bench-mmap-size-anon.$(EXT) bench-mmap-size-private.$(EXT)
 RESULTS += mmap-iter-anon.$(EXT) mmap-iter-private.$(EXT) mmap-iter-shared.$(EXT)
 RESULTS += mmap-size-anon.$(EXT) mmap-size-private.$(EXT) mmap-size-shared.$(EXT)
 RESULTS += prof-iter.$(EXT) prof-size.$(EXT)
@@ -11,6 +13,18 @@ malloc-free.$(EXT):
 
 malloc-nofree.$(EXT):
 	./plot-malloc.py ../gcp-malloc $@
+
+bench-mmap-iter-anon.$(EXT):
+	./plot-exp1-bench.py ../exp1_anon $@
+
+bench-mmap-iter-private.$(EXT):
+	./plot-exp1-bench.py ../exp1_private $@
+
+bench-mmap-size-anon.$(EXT):
+	./plot-exp2-bench.py ../exp2_anon $@
+
+bench-mmap-size-private.$(EXT):
+	./plot-exp2-bench.py ../exp2_private $@
 
 mmap-iter-anon.$(EXT):
 	./plot-exp1.py ../exp1_anon $@

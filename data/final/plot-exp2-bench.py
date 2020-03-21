@@ -16,7 +16,8 @@ data_dir = args.data_dir
 
 # Read data
 df = tb.read_exp_mmap(data_dir)
-df = df[df["mmap_size_kb"].isin([16, 32, 64, 128, 256, 512, 1024])]
+# df = df[df["mmap_size_kb"].isin([16, 32, 64, 128, 256, 512, 1024])]
+df = df[df["runtime"].isin(["runc", "runsc-kvm"])]
 operation = df["operation"].iloc[0]
 
 # Make plot
@@ -24,7 +25,8 @@ sns.set(context="paper", style="white", font="serif", font_scale=1.5)
 g = sns.catplot(
     x="mmap_size_kb",
     y="latency_ms",
-    hue="runtime",
+    hue="iterations",
+    col="runtime",
     data=df,
     kind="bar",
     ci=None,
@@ -34,9 +36,9 @@ g = sns.catplot(
 )
 tb.show_values_on_bars(g.axes)
 g.set_axis_labels("mmap size (KB)", "Latency (ms)")
-h, l = g.axes[0][0].get_legend_handles_labels()
+# h, l = g.axes[0][0].get_legend_handles_labels()
 g.axes[0][0].legend_.remove()
-g.fig.legend(h, l, ncol=3)
-g.fig.tight_layout()
-g.fig.subplots_adjust(top=0.9)
+# g.fig.legend(h, l, ncol=3)
+# g.fig.tight_layout()
+# g.fig.subplots_adjust(top=0.9)
 g.savefig(args.output, dpi=400)
