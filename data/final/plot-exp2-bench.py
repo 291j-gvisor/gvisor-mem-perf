@@ -16,7 +16,6 @@ data_dir = args.data_dir
 
 # Read data
 df = tb.read_exp_mmap(data_dir)
-# df = df[df["mmap_size_kb"].isin([16, 32, 64, 128, 256, 512, 1024])]
 df = df[df["runtime"].isin(["runc", "runsc-kvm"])]
 operation = df["operation"].iloc[0]
 
@@ -30,8 +29,8 @@ g = sns.catplot(
     data=df,
     kind="bar",
     ci=None,
-    height=2.4,
-    aspect=4 / 3,
+    height=1.6,
+    aspect=4 / 2,
     legend_out=False,
 )
 tb.show_values_on_bars(g.axes)

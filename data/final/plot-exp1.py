@@ -31,8 +31,8 @@ g = sns.catplot(
     data=df,
     kind="bar",
     ci=None,
-    height=2.4,
-    aspect=4 / 3,
+    height=1.6,
+    aspect=4 / 2,
     legend_out=False,
 )
 tb.show_values_on_bars(g.axes)
@@ -41,5 +41,5 @@ h, l = g.axes[0][0].get_legend_handles_labels()
 g.axes[0][0].legend_.remove()
 g.fig.legend(h, l, ncol=3)
 g.fig.tight_layout()
-g.fig.subplots_adjust(top=0.9)
+g.fig.subplots_adjust(top=0.85)
 g.savefig(args.output, dpi=400)
