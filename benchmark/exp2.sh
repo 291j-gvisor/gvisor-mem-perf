@@ -4,8 +4,8 @@ sleep 10
 
 # the selected one for anon
 #nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runc --iterations=25000
-#nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runsc-kvm --iterations=25000
-nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runsc-dev --iterations=25000
+nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runsc-kvm --iterations=25000
+nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runsc-dev --iterations=50000
 
 # the selected one for shared and private
 #nice -20 taskset 0x1 python3 run_mmap2.py --runtime=runc --iterations=25000
